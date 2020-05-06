@@ -8,17 +8,21 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
+    const subject = {
+        name: req.params.name
+    }
     res.status(200).json({
-        message: 'Handling POST requests to /categories'
+        message: 'Handling POST requests to /subjects',
+        createdSubject: subject
     })
 })
 
-router.get('/:categoryId' ,(req, res, next) => {
-    const id = req.params.categoryId;
+router.get('/:subjectId' ,(req, res, next) => {
+    const id = req.params.subjectId;
     if( id === 'special') {
         res.status(200).json({
             message: 'You discovered the special ID',
-            categoryId: req.params.categoryId
+            subjectId: req.params.subjectId
         })
     } else {
         res.status(200).json({
@@ -27,16 +31,16 @@ router.get('/:categoryId' ,(req, res, next) => {
     }
 })
 
-router.patch('/:categoryId' ,(req, res, next) => {
+router.patch('/:subjectId' ,(req, res, next) => {
     res.status(200).json({
-        message: 'Updated category!',
-        categoryId: req.params.categoryId
+        message: 'Updated subject!',
+        subjectId: req.params.subjectId
     })
 })
 
-router.delete('/:categoryId' ,(req, res, next) => {
+router.delete('/:subjectId' ,(req, res, next) => {
     res.status(200).json({
-        message: 'Deleted product!'
+        message: 'Deleted subject!'
     })
 })
 

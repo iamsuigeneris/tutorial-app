@@ -18,7 +18,7 @@ router.get('/:lessonId' ,(req, res, next) => {
     if( id === 'special') {
         res.status(200).json({
             message: 'You discovered the special ID for lesson',
-            lessonId: req.params.categoryId
+            lessonId: req.params.lessonId
         })
     } else {
         res.status(200).json({

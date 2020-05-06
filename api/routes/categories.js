@@ -8,10 +8,15 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Handling POST requests to /categories'
+    const category = {
+        name: req.params.name
+    }
+    res.status(201).json({
+        message:'Handling POST requests to /categories',
+        createdCategory: category
     })
 })
+
 
 router.get('/:categoryId' ,(req, res, next) => {
     const id = req.params.categoryId;
@@ -37,7 +42,6 @@ router.patch('/:categoryId' ,(req, res, next) => {
 router.delete('/:categoryId' ,(req, res, next) => {
     res.status(200).json({
         message: 'Deleted product!'
-    })
-})
+    })})
 
 module.exports = router;
