@@ -3,7 +3,10 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
-const tutorialRoutes = require('./api/routes/tutorials')
+const categoryRoutes = require('./api/routes/categories')
+const subjectRoutes = require('./api/routes/subjects')
+const lessonRoutes = require('./api/routes/lessons')
+
 
 
 app.use(morgan('dev'));
@@ -23,8 +26,10 @@ next()
 })
 
 
-// Calling the App
-app.use('/tutorials', tutorialRoutes);
+// Calling the categories,subjects,lessons routes
+app.use('/categories', categoryRoutes);
+app.use('/subjects', subjectRoutes);
+app.use('/lessons', lessonRoutes);
 
 // Error Handling
 app.use((req, res, next) => {
