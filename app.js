@@ -2,12 +2,18 @@ const express = require('express')
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const categoryRoutes = require('./api/routes/categories')
 const subjectRoutes = require('./api/routes/subjects')
 const lessonRoutes = require('./api/routes/lessons')
+const tutorRoutes = require('./api/routes/tutors')
 
+mongoose.connect('mongodb+srv://iamsuigeneris:' + process.env.MONGO_ATLAS_PW +          '@cluster0-orkfk.mongodb.net/tutorial_db?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Database Connected' ))
+    .catch( err => console.log( err ))
 
+mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}))
@@ -30,6 +36,7 @@ next()
 app.use('/categories', categoryRoutes);
 app.use('/subjects', subjectRoutes);
 app.use('/lessons', lessonRoutes);
+app.use('/tutors', tutorRoutes);
 
 // Error Handling
 app.use((req, res, next) => {

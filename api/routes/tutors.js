@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
 
-const Lesson = require('../models/lesson')
+const Tutor = require('../models/tutor')
 
 router.get('/', (req, res, next) => {
-    Lesson.find()
+    Tutor.find()
         .exec()
         .then( docs => {
             console.log(docs);
@@ -20,17 +20,17 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const lesson = new Lesson({
+    const tutor = new Tutor({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name
     })
-    lesson
+    tutor
         .save()
         .then( result => {
             console.log(result);
             res.status(201).json({
-                message:'Handling POST requests to /lessons',
-                createdLesson: result
+                message:'Handling POST requests to /tutors',
+                createdTutor: result
             })
     })
     .catch(err => {
@@ -42,9 +42,10 @@ router.post('/', (req, res, next) => {
     })
 })
 
-router.get('/:lessonId' ,(req, res, next) => {
-    const id = req.params.lessonId;
-    Lesson.findById(id)
+
+router.get('/:tutorId' ,(req, res, next) => {
+    const id = req.params.tutorId;
+    Tutor.findById(id)
         .exec()
         .then(doc => {
             console.log('From the database', doc);
@@ -63,13 +64,13 @@ router.get('/:lessonId' ,(req, res, next) => {
         })
 })
 
-router.patch('/:lessonId' ,(req, res, next) => {
-    const id = req.params.lessonId;
+router.patch('/:tutorId' ,(req, res, next) => {
+    const id = req.params.tutorId;
     const updateOps = {};
     for( const ops of req.body) {
         updateOps[ops.propName] = ops.value;
     }
-    Lesson.update({ _id: id }, {$set: updateOps })
+    Tutor.update({ _id: id }, {$set: updateOps })
         .exec()
         .then( result => {
             console.log(result);
@@ -83,9 +84,9 @@ router.patch('/:lessonId' ,(req, res, next) => {
         })
 })
 
-router.delete('/:lessonId' ,(req, res, next) => {
-    const id = req.params.lessonId;
-    Lesson.remove({ _id: id })
+router.delete('/:tutorId' ,(req, res, next) => {
+    const id = req.params.tutorId;
+    Tutor.remove({ _id: id })
         .exec()
         .then( result => {
             res.status(200).json(result)
