@@ -28,7 +28,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
     const category = new Category({
-        _id: mongoose.Types.ObjectId(),
+        _id: new mongoose.Types.ObjectId(),
         name: req.body.name
     })
     category

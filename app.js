@@ -8,6 +8,7 @@ const categoryRoutes = require('./api/routes/categories')
 const subjectRoutes = require('./api/routes/subjects')
 const lessonRoutes = require('./api/routes/lessons')
 const tutorRoutes = require('./api/routes/tutors')
+const userRoutes = require('./api/routes/user')
 
 mongoose.connect('mongodb+srv://iamsuigeneris:' + process.env.MONGO_ATLAS_PW +          '@cluster0-orkfk.mongodb.net/tutorial_db?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Database Connected' ))
@@ -37,6 +38,7 @@ app.use('/categories', categoryRoutes);
 app.use('/subjects', subjectRoutes);
 app.use('/lessons', lessonRoutes);
 app.use('/tutors', tutorRoutes);
+app.use('/user', userRoutes)
 
 // Error Handling
 app.use((req, res, next) => {

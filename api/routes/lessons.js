@@ -7,6 +7,8 @@ const Subject = require('../models/subject')
 
 router.get('/', (req, res, next) => {
     Lesson.find()
+        .select('subject title _id')
+        .populate('subject','name')
         .exec()
         .then( docs => {
             res.status(200).json({
@@ -66,6 +68,7 @@ router.post('/', (req, res, next) => {
 router.get('/:lessonId' ,(req, res, next) => {
     const id = req.params.lessonId;
     Lesson.findById(id)
+        .populate('subject','name')
         .exec()
         .then(doc => {
             res.status(200).json({

@@ -8,25 +8,26 @@ const Category = require('../models/category')
 router.get('/', (req, res, next) => {
     Subject.find()
     .select('category name _id')
-        .exec()
-        .then( docs => {
-            res.status(200).json({
-                count: docs.length,
-                subjects: docs.map( doc => {
-                    return {
-                        _id: doc._id,
-                        category: doc.category,
-                        name: doc.name
-                    }
-                })  
-            })   
+    .populate('category','name')
+    .exec()
+    .then( docs => {
+        res.status(200).json({
+            count: docs.length,
+            subjects: docs.map( doc => {
+                return {
+                    _id: doc._id,
+                    category: doc.category,
+                    name: doc.name
+                }
+            })  
+        })   
+    })
+    .catch( err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
         })
-        .catch( err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
-        })
+    })
 })
 
 router.post('/', (req, res, next) => {
@@ -68,6 +69,7 @@ router.post('/', (req, res, next) => {
 router.get('/:subjectId' ,(req, res, next) => {
     const id = req.params.subjectId;
     Subject.findById(id)
+        .populate('category','name')
         .exec()
         .then(subject => {
             res.status(200).json({

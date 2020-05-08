@@ -8,6 +8,7 @@ const Subject = require('../models/subject')
 router.get('/', (req, res, next) => {
     Tutor.find()
         .select('subject name _id')
+        .populate('subject','name')
         .exec()
         .then( docs => {
             res.status(200).json({
