@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
+const checkAuth = require('../middleware/check-auth'); 
 
 const Subject = require('../models/subject')
 const Category = require('../models/category')
@@ -30,7 +31,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
     Category.findById(req.body.categoryId) 
         .then( category => {
             if(!category){
@@ -83,7 +84,7 @@ router.get('/:subjectId' ,(req, res, next) => {
         })
 })
 
-router.patch('/:subjectd' ,(req, res, next) => {
+router.patch('/:subjectd', checkAuth, (req, res, next) => {
     const id = req.params.subjectId;
     const updateOps = {};
     for( const ops of req.body) {
@@ -103,7 +104,7 @@ router.patch('/:subjectd' ,(req, res, next) => {
         })
 })
 
-router.delete('/:subjectId' ,(req, res, next) => {
+router.delete('/:subjectId', checkAuth, (req, res, next) => {
     const id = req.params.subjectId;
     Subject.remove({ _id: id })
         .exec()

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
+const checkAuth = require('../middleware/check-auth'); 
 
 const Tutor = require('../models/tutor')
 const Subject = require('../models/subject')
@@ -30,7 +31,7 @@ router.get('/', (req, res, next) => {
         })
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
     Subject.findById(req.body.subjectId) 
         .then( subject => {
             if(!subject){
@@ -65,7 +66,6 @@ router.post('/', (req, res, next) => {
         })
 })
 
-
 router.get('/:tutorId' ,(req, res, next) => {
     const id = req.params.tutorId;
     Tutor.findById(id)
@@ -81,7 +81,7 @@ router.get('/:tutorId' ,(req, res, next) => {
         })
 })
 
-router.patch('/:tutorId' ,(req, res, next) => {
+router.patch('/:tutorId' , checkAuth, (req, res, next) => {
     const id = req.params.tutorId;
     const updateOps = {};
     for( const ops of req.body) {
@@ -101,7 +101,7 @@ router.patch('/:tutorId' ,(req, res, next) => {
         })
 })
 
-router.delete('/:tutorId' ,(req, res, next) => {
+router.delete('/:tutorId', checkAuth, (req, res, next) => {
     const id = req.params.tutorId;
     Tutor.remove({ _id: id })
         .exec()
