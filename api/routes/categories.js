@@ -8,8 +8,15 @@ router.get('/', (req, res, next) => {
     Category
         .find()
         .then( docs => {
-            console.log(docs);
-            res.status(200).json(docs)  
+            res.status(200).json({
+                count: docs.length,
+                categories: docs.map( doc => {
+                    return {
+                        _id: doc._id,
+                        name: doc.name
+                    }
+                })
+            })  
         })
         .catch( err => {
             console.log(err);

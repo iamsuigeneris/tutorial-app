@@ -3,13 +3,22 @@ const router = express.Router();
 const mongoose = require('mongoose')
 
 const Lesson = require('../models/lesson')
+const Subject = require('../models/subject')
 
 router.get('/', (req, res, next) => {
     Lesson.find()
         .exec()
         .then( docs => {
-            console.log(docs);
-            res.status(200).json(docs)  
+            res.status(200).json({
+                count: docs.length,
+                lessons: docs.map( doc => {
+                    return {
+                        _id: doc._id,
+                        subject: doc.subject,
+                        title: doc.title
+                    }
+                })
+            })  
         })
         .catch( err => {
             console.log(err);
@@ -20,26 +29,38 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const lesson = new Lesson({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name
-    })
-    lesson
-        .save()
+    Subject.findById(req.body.subjectId) 
+        .then( subject => {
+            if(!subject){
+                return res.status(404).json({
+                    message: "Subject not found"
+                })
+            }
+            const lesson = new Lesson({
+                _id: mongoose.Types.ObjectId(),
+                title: req.body.title,
+                subject: req.body.subjectId
+
+            })
+            return lesson.save()
+        })
         .then( result => {
             console.log(result);
             res.status(201).json({
-                message:'Handling POST requests to /lessons',
-                createdLesson: result
+                message:'lesson Stored',
+                createdLesson: {
+                    _id: result._id,
+                    subject: result.subject,
+                    title: result.title
+                }
             })
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
         })
-
-    })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
 })
 
 router.get('/:lessonId' ,(req, res, next) => {
@@ -47,15 +68,9 @@ router.get('/:lessonId' ,(req, res, next) => {
     Lesson.findById(id)
         .exec()
         .then(doc => {
-            console.log('From the database', doc);
-            if(doc) {
-                res.status(200).json(doc)
-            }else{
-                res.status(404).json({
-                    message:'No valid entry found for provided ID'
-                })
-            }
-           
+            res.status(200).json({
+                lesson: lesson
+            })  
         })
         .catch(err => {
             console.log(err);
@@ -67,7 +82,7 @@ router.patch('/:lessonId' ,(req, res, next) => {
     const id = req.params.lessonId;
     const updateOps = {};
     for( const ops of req.body) {
-        updateOps[ops.propName] = ops.value;
+        updateOps[ops.propTitle] = ops.value;
     }
     Lesson.update({ _id: id }, {$set: updateOps })
         .exec()
@@ -88,7 +103,9 @@ router.delete('/:lessonId' ,(req, res, next) => {
     Lesson.remove({ _id: id })
         .exec()
         .then( result => {
-            res.status(200).json(result)
+            res.status(200).json({
+                message: 'Lesson deleted'
+            })
         })
         .catch( err => {
             console.log(err);
