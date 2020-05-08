@@ -4,108 +4,16 @@ const mongoose = require('mongoose')
 const checkAuth = require('../middleware/check-auth'); 
 
 const Category = require('../models/category')
+const CategoriesController = require('../controllers/categories')
 
-router.get('/', (req, res, next) => {
-    Category
-        .find()
-        .then( docs => {
-            res.status(200).json({
-                count: docs.length,
-                categories: docs.map( doc => {
-                    return {
-                        _id: doc._id,
-                        name: doc.name
-                    }
-                })
-            })  
-        })
-        .catch( err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
-        })
-})
+router.get('/', CategoriesController.categories_get_all)
 
-router.post('/', checkAuth, (req, res, next) => {
-    const category = new Category({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name
-    })
-    category
-        .save()
-        .then( result => {
-            console.log(result);
-            res.status(201).json({
-                message:'Handling POST requests to /categories',
-                createdCategory: result
-            })
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        })
+router.post('/', checkAuth, CategoriesController.categories_post_one)
 
-    })
-})
+router.get('/:categoryId', CategoriesController.categories_get_one)
 
+router.patch('/:categoryId', checkAuth, CategoriesController.categories_patch_one)
 
-router.get('/:categoryId',(req, res, next) => {
-    const id = req.params.categoryId;
-    Category
-        .findById(id)
-        .exec()
-        .then(doc => {
-            console.log('From the database', doc);
-            if(doc) {
-                res.status(200).json(doc)
-            }else{
-                res.status(404).json({
-                    message:'No valid entry found for provided ID'
-                })
-            }
-           
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({ error: err })
-        })
-})
-
-router.patch('/:categoryId', checkAuth, (req, res, next) => {
-    const id = req.params.categoryId;
-    const updateOps = {};
-    for( const ops of req.body) {
-        updateOps[ops.propName] = ops.value;
-    }
-    Category.update({ _id: id }, {$set: updateOps })
-        .exec()
-        .then( result => {
-            console.log(result);
-            res.status(200).json(result)
-        })
-        .catch( err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
-        })
-})
-
-router.delete('/:categoryId', checkAuth, (req, res, next) => {
-    const id = req.params.categoryId;
-    Category.remove({ _id: id })
-        .exec()
-        .then( result => {
-            res.status(200).json(result)
-        })
-        .catch( err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
-        })
-})
+router.delete('/:categoryId', checkAuth, CategoriesController.categories_delete_one)
 
 module.exports = router;
